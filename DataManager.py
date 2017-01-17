@@ -3,7 +3,6 @@ import sqlite3
 import platform
 import datetime
 import threading
-import numpy as np
 
 
 class DataManager:
@@ -78,31 +77,3 @@ class DataManager:
 
         if in_bytes < 1024 * 1024 * 1024 * 1024:
             return str(round(in_bytes / 1024 / 1024 / 1024, 1)) + ' GB'
-
-    def build_chart_data(self, start, end, data):
-        # In seconds
-        time_step = 60 * 5
-        half_step = time_step / 2
-
-        # Linspace start-stop interval with time step
-        space = [(start + datetime.timedelta(seconds=s))
-                 for s in range(0, int((end - start).total_seconds()) + 1, time_step)]
-
-        # Create for each time point element the array of values by left and right of half step
-        arr = {}
-        for date in space:
-            stamp = date.timestamp()
-            keys = np.array(list(data.keys()))
-            keys = keys[keys > stamp - half_step]
-            keys = keys[keys < stamp + half_step]
-            arr[date] = [data[k] for k in keys]
-            for k in keys:
-                del data[k]
-
-        # Create scatter dictionary with average values
-        ret_data = []
-        for k in sorted(arr.keys()):
-            ret_data.append({'x': k.strftime('%Y-%m-%d %H:%M:%S'),
-                             'y': int(np.mean(arr[k]) if len(arr[k]) > 0 else 0)})
-
-        return ret_data
