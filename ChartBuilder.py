@@ -3,7 +3,14 @@ import datetime
 import numpy as np
 
 
-def build_scatter_data(start, end, data):
+def find_unit(max_net):
+    units = ['Bytes', 'KBytes', 'MBytes', 'GBytes']
+    for i, u in enumerate(units):
+        if 1 < max_net / pow(1024, i) < 1024:
+            return pow(1024, i), u
+
+
+def build_scatter_data(start, end, data, max_value=1):
     # In seconds
     time_step = 60 * 5
     half_step = time_step / 2
@@ -27,7 +34,7 @@ def build_scatter_data(start, end, data):
     ret_data = []
     for k in sorted(arr.keys()):
         ret_data.append({'x': k.strftime('%Y-%m-%d %H:%M:%S'),
-                         'y': int(np.mean(arr[k]) if len(arr[k]) > 0 else 0)})
+                         'y': int(np.mean(arr[k])) / max_value if len(arr[k]) > 0 else 0})
 
     return ret_data
 
@@ -188,21 +195,27 @@ def build_net_chart(start, end, data):
         recv_data[int(time.timestamp())] = - recv
         send_data[int(time.timestamp())] = + send
 
+    max_recv = max([abs(recv_data[k]) for k in recv_data])
+    max_send = max([abs(send_data[k]) for k in send_data])
+    max_net = max(max_recv, max_send)
+
+    unit_factor, unit = find_unit(max_net)
+
     # Build dataset for chart
-    recv_data = build_scatter_data(start, end, recv_data)
-    send_data = build_scatter_data(start, end, send_data)
+    recv_data = build_scatter_data(start, end, recv_data, unit_factor)
+    send_data = build_scatter_data(start, end, send_data, unit_factor)
 
     # Set chart data and options
     net_chart = {
         'datasets': [{
-            'label': 'Received, bytes',
+            'label': 'Received, %s' % unit,
             'data': recv_data,
             'fill': True,
             'lineTension': 0.3,
             'backgroundColor': "rgba(95,120,192,0.4)",
             'borderColor': "rgba(95,120,192,1)"
         }, {
-            'label': 'Sent, bytes',
+            'label': 'Sent, %s' % unit,
             'data': send_data,
             'fill': True,
             'lineTension': 0.5,
@@ -271,21 +284,27 @@ def build_hdd_chart(start, end, data):
         read_data[int(time.timestamp())] = + read
         write_data[int(time.timestamp())] = - write
 
+    max_read = max([abs(read_data[k]) for k in read_data])
+    max_write = max([abs(write_data[k]) for k in write_data])
+    max_hdd = max(max_read, max_write)
+
+    unit_factor, unit = find_unit(max_hdd)
+
     # Build dataset for chart
-    read_data = build_scatter_data(start, end, read_data)
-    write_data = build_scatter_data(start, end, write_data)
+    read_data = build_scatter_data(start, end, read_data, unit_factor)
+    write_data = build_scatter_data(start, end, write_data, unit_factor)
 
     # Set chart data and options
     hdd_chart = {
         'datasets': [{
-            'label': 'Write, bytes',
+            'label': 'Write, %s' % unit,
             'data': write_data,
             'fill': True,
             'lineTension': 0.3,
             'backgroundColor': "rgba(95,120,192,0.4)",
             'borderColor': "rgba(95,120,192,1)"
         }, {
-            'label': 'Read, bytes',
+            'label': 'Read, %s' % unit,
             'data': read_data,
             'fill': True,
             'lineTension': 0.5,
