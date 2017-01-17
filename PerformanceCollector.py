@@ -40,7 +40,7 @@ class PerformanceCollector:
             net = psutil.net_io_counters()
             sent = net.bytes_sent
             receive = net.bytes_recv
-            self.data_manager.add_net_data(receive - receive_old, sent - sent_old)
+            self.data_manager.add_net_data((receive - receive_old) / self.dump_interval, (sent - sent_old) / self.dump_interval)
 
     def collect_hdd_performance(self):
         while True:
@@ -51,7 +51,7 @@ class PerformanceCollector:
             disk = psutil.disk_io_counters()
             read = disk.read_bytes
             write = disk.write_bytes
-            self.data_manager.add_hdd_data(read - read_old, write - write_old)
+            self.data_manager.add_hdd_data((read - read_old) / self.dump_interval, (write - write_old) / self.dump_interval)
 
     def wait(self):
         self.cpu_thread.join()

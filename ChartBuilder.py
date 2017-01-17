@@ -4,10 +4,12 @@ import numpy as np
 
 
 def find_unit(max_value):
-    units = ['Bytes', 'KBytes', 'MBytes', 'GBytes']
+    units = ['Bytes/s', 'KBytes/s', 'MBytes/s', 'GBytes/s']
     for i, u in enumerate(units):
         if 1 < max_value / pow(1024, i) < 1024:
             return pow(1024, i), u
+
+    return 1, units[0]
 
 
 def build_scatter_data(start, end, data, max_value=1):
@@ -195,8 +197,8 @@ def build_net_chart(start, end, data):
         recv_data[int(time.timestamp())] = - recv
         send_data[int(time.timestamp())] = + send
 
-    max_recv = max([abs(recv_data[k]) for k in recv_data])
-    max_send = max([abs(send_data[k]) for k in send_data])
+    max_recv = max([abs(recv_data[k]) for k in recv_data] or [0])
+    max_send = max([abs(send_data[k]) for k in send_data] or [0])
     max_net = max(max_recv, max_send)
 
     unit_factor, unit = find_unit(max_net)
@@ -284,8 +286,8 @@ def build_hdd_chart(start, end, data):
         read_data[int(time.timestamp())] = + read
         write_data[int(time.timestamp())] = - write
 
-    max_read = max([abs(read_data[k]) for k in read_data])
-    max_write = max([abs(write_data[k]) for k in write_data])
+    max_read = max([abs(read_data[k]) for k in read_data] or [0])
+    max_write = max([abs(write_data[k]) for k in write_data] or [0])
     max_hdd = max(max_read, max_write)
 
     unit_factor, unit = find_unit(max_hdd)
