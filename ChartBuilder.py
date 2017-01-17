@@ -3,10 +3,10 @@ import datetime
 import numpy as np
 
 
-def find_unit(max_net):
+def find_unit(max_value):
     units = ['Bytes', 'KBytes', 'MBytes', 'GBytes']
     for i, u in enumerate(units):
-        if 1 < max_net / pow(1024, i) < 1024:
+        if 1 < max_value / pow(1024, i) < 1024:
             return pow(1024, i), u
 
 
