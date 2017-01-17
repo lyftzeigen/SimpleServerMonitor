@@ -1,0 +1,4 @@
+psutil
+sqlite3
+cherrypy
+numpy

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SimpleServerMonitor</title>
+
+    <!--Import Google Icon Font-->
+    <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!--Import Materialize CSS-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/css/materialize.min.css">
+    <!--Import JQuery and Materialize-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/js/materialize.min.js"></script>
+    <!--Import Moment JS-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.17.1/moment.min.js"></script>
+    <!--Import Chart JS-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+    <!--Let browser know website is optimized for mobile-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+</head>
+<body>
+    <div class="container">
+        <div id="titleArea">
+            <h1 class="thin">SimpleServerMonitor</h1>
+            <h5 class="light">on %os_name%</h5>
+        </div>
+
+        <div class="row">
+            <div id="cpuArea" class="col s12 m12 l6">
+                <h5 class="light">CPU (%cores_count% cores)</h5>
+                <canvas id="cpuChart" width="600" height="300"></canvas>
+            </div>
+            <div id="memArea" class="col s12 m12 l6">
+                <h5 class="light">Memory (%total_memory%)</h5>
+                <canvas id="memChart" width="600" height="300"></canvas>
+            </div>
+            <div id="netArea" class="col s12 l6">
+                <h5 class="light">Network</h5>
+                <canvas id="netChart" width="600" height="300"></canvas>
+            </div>
+            <div id="hddArea" class="col s12 l6">
+                <h5 class="light">Disk (%total_disk%)</h5>
+                <canvas id="hddChart" width="600" height="300"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            var cpuCtx = $('#cpuChart');
+            var memCtx = $('#memChart');
+            var netCtx = $('#netChart');
+            var hddCtx = $('#hddChart');
+
+            $('#cpuArea').hide();
+            $('#memArea').hide();
+            $('#netArea').hide();
+            $('#hddArea').hide();
+            $('#titleArea').hide();
+
+            $('#titleArea').fadeIn(1000);
+
+            $.ajax({
+                method: "GET",
+                dataType: "json",
+                url: "/performance_cpu"
+            }).done(DrawCPUChart);
+
+            function DrawCPUChart(charts) {
+                var cpuChart = new Chart(cpuCtx, {type: 'line', data: charts.data, options: charts.options});
+                $('#cpuArea').fadeIn(2000);
+
+                $.ajax({
+                    method: "GET",
+                    dataType: "json",
+                    url: "/performance_mem"
+                }).done(DrawMEMChart);
+            }
+
+            function DrawMEMChart(charts) {
+                var cpuChart = new Chart(memCtx, {type: 'line', data: charts.data, options: charts.options});
+                $('#memArea').fadeIn(2000);
+
+                $.ajax({
+                    method: "GET",
+                    dataType: "json",
+                    url: "/performance_net"
+                }).done(DrawNETChart);
+            }
+
+            function DrawNETChart(charts) {
+                var netChart = new Chart(netCtx, {type: 'line', data: charts.data, options: charts.options});
+                $('#netArea').fadeIn(2000);
+
+                $.ajax({
+                    method: "GET",
+                    dataType: "json",
+                    url: "/performance_hdd"
+                }).done(DrawHDDChart);
+            }
+
+            function DrawHDDChart(charts) {
+                var hddChart = new Chart(hddCtx, {type: 'line', data: charts.data, options: charts.options});
+                $('#hddArea').fadeIn(2000);
+            }
+        });
+    </script>
+</body>
+</html>
