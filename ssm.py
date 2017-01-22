@@ -25,3 +25,5 @@ if __name__ == '__main__':
     cherrypy.config.update({'server.socket_host': http.host})
     cherrypy.config.update({'server.socket_port': http.port})
     cherrypy.quickstart(gui, '/', conf)
+
+    pc.wait()

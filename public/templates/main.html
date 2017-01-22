@@ -58,50 +58,50 @@
             $('#hddArea').hide();
             $('#titleArea').hide();
 
-            $('#titleArea').fadeIn(1000);
-
-            $.ajax({
-                method: "GET",
-                dataType: "json",
-                url: "/performance_cpu"
-            }).done(DrawCPUChart);
-
-            function DrawCPUChart(charts) {
-                var cpuChart = new Chart(cpuCtx, {type: 'line', data: charts.data, options: charts.options});
-                $('#cpuArea').fadeIn(2000);
-
+            $('#titleArea').fadeIn(500, function(){
                 $.ajax({
                     method: "GET",
                     dataType: "json",
-                    url: "/performance_mem"
-                }).done(DrawMEMChart);
+                    url: "/performance_cpu"
+                }).done(DrawCPUChart);
+            });
+
+            function DrawCPUChart(charts) {
+                var cpuChart = new Chart(cpuCtx, {type: 'line', data: charts.data, options: charts.options});
+                $('#cpuArea').fadeIn(500, function(){
+                    $.ajax({
+                        method: "GET",
+                        dataType: "json",
+                        url: "/performance_mem"
+                    }).done(DrawMEMChart);
+                });
             }
 
             function DrawMEMChart(charts) {
                 var cpuChart = new Chart(memCtx, {type: 'line', data: charts.data, options: charts.options});
-                $('#memArea').fadeIn(2000);
-
-                $.ajax({
-                    method: "GET",
-                    dataType: "json",
-                    url: "/performance_net"
-                }).done(DrawNETChart);
+                $('#memArea').fadeIn(500, function(){
+                    $.ajax({
+                        method: "GET",
+                        dataType: "json",
+                        url: "/performance_net"
+                    }).done(DrawNETChart);
+                });
             }
 
             function DrawNETChart(charts) {
                 var netChart = new Chart(netCtx, {type: 'line', data: charts.data, options: charts.options});
-                $('#netArea').fadeIn(2000);
-
-                $.ajax({
-                    method: "GET",
-                    dataType: "json",
-                    url: "/performance_hdd"
-                }).done(DrawHDDChart);
+                $('#netArea').fadeIn(1000, function(){
+                    $.ajax({
+                        method: "GET",
+                        dataType: "json",
+                        url: "/performance_hdd"
+                    }).done(DrawHDDChart);
+                });
             }
 
             function DrawHDDChart(charts) {
                 var hddChart = new Chart(hddCtx, {type: 'line', data: charts.data, options: charts.options});
-                $('#hddArea').fadeIn(2000);
+                $('#hddArea').fadeIn(500);
             }
         });
     </script>

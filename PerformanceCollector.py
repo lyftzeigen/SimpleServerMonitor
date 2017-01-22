@@ -7,12 +7,17 @@ from DataManager import DataManager
 
 class PerformanceCollector:
     def __init__(self):
-        self.dump_interval = 60  # Seconds
+        self.dump_interval = 30  # Seconds
         self.data_manager = DataManager()
         self.cpu_thread = threading.Thread(target=self.collect_cpu_performance)
         self.memory_thread = threading.Thread(target=self.collect_mem_performance)
         self.network_thread = threading.Thread(target=self.collect_net_performance)
         self.disk_thread = threading.Thread(target=self.collect_hdd_performance)
+
+        self.cpu_thread.daemon = True
+        self.memory_thread.daemon = True
+        self.network_thread.daemon = True
+        self.disk_thread.daemon = True
 
         print('[', datetime.datetime.today(), ']', 'Start')
         self.cpu_thread.start()
@@ -40,7 +45,8 @@ class PerformanceCollector:
             net = psutil.net_io_counters()
             sent = net.bytes_sent
             receive = net.bytes_recv
-            self.data_manager.add_net_data((receive - receive_old) / self.dump_interval, (sent - sent_old) / self.dump_interval)
+            self.data_manager.add_net_data((receive - receive_old) / self.dump_interval,
+                                           (sent - sent_old) / self.dump_interval)
 
     def collect_hdd_performance(self):
         while True:
@@ -51,7 +57,8 @@ class PerformanceCollector:
             disk = psutil.disk_io_counters()
             read = disk.read_bytes
             write = disk.write_bytes
-            self.data_manager.add_hdd_data((read - read_old) / self.dump_interval, (write - write_old) / self.dump_interval)
+            self.data_manager.add_hdd_data((read - read_old) / self.dump_interval,
+                                           (write - write_old) / self.dump_interval)
 
     def wait(self):
         self.cpu_thread.join()
