@@ -7,7 +7,7 @@ from DataManager import DataManager
 
 class PerformanceCollector:
     def __init__(self):
-        self.dump_interval = 5  # Seconds
+        self.dump_interval = 30  # Seconds
         self.data_manager = DataManager()
         self.cpu_thread = threading.Thread(target=self.collect_cpu_performance)
         self.memory_thread = threading.Thread(target=self.collect_mem_performance)
