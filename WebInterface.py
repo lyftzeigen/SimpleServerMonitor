@@ -56,4 +56,4 @@ class WebInterface(object):
 
     @cherrypy.expose
     def default(self, attr='abc'):
-        return open(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'public/pages/404.html'))
+        return open(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'public/templates/404.html'))
