@@ -20,16 +20,16 @@ Install Python.
 ```sh
 apt-get install python3-dev python3-pip python3-setuptools
 ```
-Install all Python requirements.
-```sh
-pip3 install --upgrade pip && pip3 install -r requirements.txt
-```
 
 Clone SimpleServerMonitor from the repository.
 ```sh
 git clone https://github.com/lyftzeigen/SimpleServerMonitor.git && cd SimpleServerMonitor
 ```
 
+Install all Python requirements.
+```sh
+pip3 install --upgrade pip && pip3 install -r requirements.txt
+```
 Add SimpleServerMonitor to autostart. The simplest way to do this is using cron.
 Open crontab and add path to start script with @reboot policy.
 ```sh
@@ -47,7 +47,6 @@ Finally run the start script.
 ```sh
 ./start.sh
 ```
-
 To stop SimpleServerMonitor do the same.
 ```sh
 ./stop.sh
